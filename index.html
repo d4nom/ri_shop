@@ -135,11 +135,11 @@
 
     .contentBox {
       position: relative;
-      padding: 40px;
+      padding: 20px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       z-index: 2;
       transition: transform 0.5s ease-in-out; /* Добавлена плавность */
     }
@@ -164,9 +164,6 @@
     }
 
     .contentBox .buy {
-      position: relative;
-      top: 100px;
-      opacity: 0;
       padding: 10px 30px;
       margin-top: 15px;
       color: white;
@@ -175,14 +172,12 @@
       border-radius: 20px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Улучшена плавность */
+      transition: background 0.3s ease-in-out; /* Улучшена плавность */
       cursor: pointer;
     }
 
-    /* Добавляем стили для активной карточки */
-    .card.active .contentBox .buy {
-      top: 0;
-      opacity: 1;
+    .contentBox .buy:hover {
+      background: #a000ff;
     }
 
     /* Индикаторы */
@@ -232,7 +227,16 @@
         <div class="contentBox">
           <h3>Зимний шарф</h3>
           <h2 class="price">1800 ₽</h2>
-          <a href="#" class="buy" data-product='{"name": "Зимний шарф", "price": 1800, "size": "M"}'>ПРЕДЗАКАЗ</a>
+          <div class="size-selection">
+            <label for="size_scarf">Размер:</label>
+            <select id="size_scarf">
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+          <a href="#" class="buy">ПРЕДЗАКАЗ</a>
         </div>
       </div>
       
@@ -244,7 +248,16 @@
         <div class="contentBox">
           <h3>ДЖЕРСИ</h3>
           <h2 class="price">3600 ₽</h2>
-          <a href="#" class="buy" data-product='{"name": "Джерси", "price": 3600, "size": "L"}'>КУПИТЬ</a>
+          <div class="size-selection">
+            <label for="size_jersey">Размер:</label>
+            <select id="size_jersey">
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+          <a href="#" class="buy">КУПИТЬ</a>
         </div>
       </div>
       
@@ -275,13 +288,26 @@
     document.querySelectorAll('.buy').forEach(button => {
       button.addEventListener('click', function(event) {
         event.preventDefault(); // Предотвращаем переход по ссылке
-        const productData = this.getAttribute('data-product');
-        try {
-          const product = JSON.parse(productData);
-          sendDataToBot(product);
-        } catch (error) {
-          console.error("Ошибка при разборе данных продукта:", error);
+        const card = this.closest('.card');
+        const productName = card.querySelector('h3').innerText;
+        const priceText = card.querySelector('.price').innerText;
+        const price = parseInt(priceText.replace(/\D/g, '')); // Извлекаем числовое значение цены
+        let size;
+
+        // Определяем, для какого товара выбираем размер
+        if (productName === "Зимний шарф") {
+          size = document.getElementById('size_scarf').value;
+        } else if (productName === "ДЖЕРСИ") {
+          size = document.getElementById('size_jersey').value;
         }
+
+        const product = {
+          name: productName,
+          price: price, // Цена в рублях как целое число
+          size: size
+        };
+
+        sendDataToBot(product);
       });
     });
 
