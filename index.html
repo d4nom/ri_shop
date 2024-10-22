@@ -8,20 +8,214 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
         Telegram.WebApp.expand();
-        
         function sendDataToBot(product) {
-          // Проверяем, запущено ли веб-приложение внутри Telegram
-          if (window.Telegram && window.Telegram.WebApp) {
-            // Отправляем данные боту
-            Telegram.WebApp.sendData(JSON.stringify(product));
-          } else {
-            alert("Это веб-приложение должно быть запущено внутри Telegram.");
-          }
-        }
+  if (window.Telegram && window.Telegram.WebApp) {
+    Telegram.WebApp.sendData(JSON.stringify(product));
+  } else {
+    alert("Это веб-приложение должно быть запущено внутри Telegram.");
+  }
+}
   </script>
   <style>
-    /* Ваш CSS здесь */
-    /* ... */
+    /* Встроенный CSS */
+
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: "Istok Web", sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #212121;
+      overflow: hidden; /* Скрываем вертикальную прокрутку */
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 360px; /* Максимальная ширина для мобильных устройств */
+      padding: 20px;
+      overflow: hidden; /* Скрываем переполнение */
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease-in-out; /* Плавный переход */
+      /* Убираем native прокрутку */
+    }
+
+    .card {
+      flex: 0 0 100%;
+      position: relative;
+      width: 100%;
+      height: 480px;
+      background: #191919;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.5s ease-in-out; /* Улучшена плавность */
+      margin-right: 20px; /* Расстояние между карточками */
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    /* Добавляем стили для активной карточки */
+    .card.active {
+      transform: scale(1.05);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      width: 100%;
+      height: 100%;
+      background: #8b00ff;
+      transform: skewY(345deg);
+      transition: top 0.5s ease-in-out, transform 0.5s ease-in-out; /* Улучшена плавность */
+      z-index: 0;
+    }
+
+    .card:hover::before,
+    .card.active::before {
+      top: -70%;
+      transform: skewY(390deg);
+    }
+
+    .card::after {
+      content: "RAVEILLUSION";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-weight: 600;
+      font-size: 6em;
+      color: rgba(0, 0, 0, 0.1);
+      transition: opacity 0.5s ease-in-out; /* Добавлена плавность */
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .card:hover::after,
+    .card.active::after {
+      opacity: 1;
+    }
+
+    .imgBox {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      z-index: 1;
+    }
+
+    .imgBox img {
+      max-width: 100%;
+      height: 300px;
+      object-fit: contain;
+      border-radius: 20px;
+      transition: transform 0.5s ease-in-out; /* Улучшена плавность */
+    }
+
+    .card:hover .imgBox img,
+    .card.active .imgBox img {
+      transform: scale(1.1);
+    }
+
+    .contentBox {
+      position: relative;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 2;
+      transition: transform 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox h3 {
+      font-size: 18px;
+      color: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      transition: color 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox .price {
+      font-size: 24px;
+      color: white;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      transition: color 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox .buy {
+      position: relative;
+      top: 100px;
+      opacity: 0;
+      padding: 10px 30px;
+      margin-top: 15px;
+      color: white;
+      text-decoration: none;
+      background: #8b00ff;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Улучшена плавность */
+      cursor: pointer;
+    }
+
+    /* Добавляем стили для активной карточки */
+    .card.active .contentBox .buy {
+      top: 0;
+      opacity: 1;
+    }
+
+    /* Индикаторы */
+    .indicators {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+      transition: opacity 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .indicator {
+      width: 10px;
+      height: 10px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      transition: background 0.3s ease-in-out; /* Улучшена плавность */
+      cursor: pointer;
+    }
+
+    .indicator.active {
+      background: #8b00ff;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 360px) {
+      .card {
+        width: 100%;
+        height: auto;
+      }
+
+      .contentBox .buy {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -30,21 +224,12 @@
       <!-- Первая карточка -->
       <div class="card active">
         <div class="imgBox">
-          <img src="https://i.postimg.cc/k43tJSMt/Screenshot-20241020-183907-SOVA-V-RE.jpg" alt="Winter Scarf" class="mouse">
+          <img src="https://i.postimg.cc/k43tJSMt/Screenshot-20241020-183907-SOVA-V-RE.jpg" alt="Mouse Corsair M65" class="mouse">
         </div>
         <div class="contentBox">
           <h3>Зимний шарф</h3>
-          <h2 class="price">1800 ₽</h2>
-          <div class="size-selection">
-            <label for="size_scarf">Размер:</label>
-            <select id="size_scarf">
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
-            </select>
-          </div>
-          <a href="#" class="buy">ПРЕДЗАКАЗ</a>
+          <h2 class="price">1800<small></small></small> ₽</h2>
+          <a href="#" class="buy" data-product='{"name": "Зимний шарф", "price": 1800, "size": "N/A"}'>ПРЕДЗАКАЗ</a>
         </div>
       </div>
       
@@ -55,17 +240,8 @@
         </div>
         <div class="contentBox">
           <h3>ДЖЕРСИ</h3>
-          <h2 class="price">3600 ₽</h2>
-          <div class="size-selection">
-            <label for="size_jersey">Размер:</label>
-            <select id="size_jersey">
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
-              <option value="XL">XL</option>
-            </select>
-          </div>
-          <a href="#" class="buy">КУПИТЬ</a>
+          <h2 class="price">3600<small></small> ₽</h2>
+          <a href="#" class="buy" data-product='{"name": "Джерси", "price": 3600, "size": "N/A"}'>КУПИТЬ</a>
         </div>
       </div>
       
@@ -83,39 +259,27 @@
 
     // Функция для взаимодействия с Telegram Web App
     function sendDataToBot(product) {
-      // Проверяем, запущено ли веб-приложение внутри Telegram
       if (window.Telegram && window.Telegram.WebApp) {
-        // Отправляем данные боту
         Telegram.WebApp.sendData(JSON.stringify(product));
+        Telegram.WebApp.close(); // Закрываем Web App
       } else {
         alert("Это веб-приложение должно быть запущено внутри Telegram.");
       }
     }
+    
+    
 
-    // Обработчик событий для кнопок "Купить"
+    // Обработчик событий для кнопок "Купить Сейчас"
     document.querySelectorAll('.buy').forEach(button => {
       button.addEventListener('click', function(event) {
         event.preventDefault(); // Предотвращаем переход по ссылке
-        const card = this.closest('.card');
-        const productName = card.querySelector('h3').innerText;
-        const priceText = card.querySelector('.price').innerText;
-        const price = parseInt(priceText.replace(/\D/g, '')); // Извлекаем числовое значение цены
-        let size;
-
-        // Определяем, для какого товара выбираем размер
-        if (productName === "Зимний шарф") {
-          size = document.getElementById('size_scarf').value;
-        } else if (productName === "ДЖЕРСИ") {
-          size = document.getElementById('size_jersey').value;
+        const productData = this.getAttribute('data-product');
+        try {
+          const product = JSON.parse(productData);
+          sendDataToBot(product);
+        } catch (error) {
+          console.error("Ошибка при разборе данных продукта:", error);
         }
-
-        const product = {
-          name: productName,
-          price: price, // Цена в рублях как целое число
-          size: size
-        };
-
-        sendDataToBot(product);
       });
     });
 
