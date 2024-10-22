@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Каталог товаров</title>
+  <!-- Подключение шрифта из Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Встроенный CSS */
+
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: "Istok Web", sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #212121;
+      overflow: hidden; /* Скрываем вертикальную прокрутку */
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 360px; /* Максимальная ширина для мобильных устройств */
+      padding: 20px;
+      overflow: hidden; /* Скрываем переполнение */
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease-in-out; /* Плавный переход */
+      /* Убираем native прокрутку */
+    }
+
+    .card {
+      flex: 0 0 100%;
+      position: relative;
+      width: 100%;
+      height: 480px;
+      background: #191919;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.5s ease-in-out; /* Улучшена плавность */
+      margin-right: 20px; /* Расстояние между карточками */
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    /* Добавляем стили для активной карточки */
+    .card.active {
+      transform: scale(1.05);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      width: 100%;
+      height: 100%;
+      background: #8b00ff;
+      transform: skewY(345deg);
+      transition: top 0.5s ease-in-out, transform 0.5s ease-in-out; /* Улучшена плавность */
+      z-index: 0;
+    }
+
+    .card:hover::before,
+    .card.active::before {
+      top: -70%;
+      transform: skewY(390deg);
+    }
+
+    .card::after {
+      content: "CORSAIR";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-weight: 600;
+      font-size: 6em;
+      color: rgba(0, 0, 0, 0.1);
+      transition: opacity 0.5s ease-in-out; /* Добавлена плавность */
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .card:hover::after,
+    .card.active::after {
+      opacity: 1;
+    }
+
+    .imgBox {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      z-index: 1;
+    }
+
+    .imgBox img {
+      max-width: 100%;
+      height: 300px;
+      object-fit: contain;
+      transition: transform 0.5s ease-in-out; /* Улучшена плавность */
+    }
+
+    .card:hover .imgBox img,
+    .card.active .imgBox img {
+      transform: scale(1.1);
+    }
+
+    .contentBox {
+      position: relative;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 2;
+      transition: transform 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox h3 {
+      font-size: 18px;
+      color: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      transition: color 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox .price {
+      font-size: 24px;
+      color: white;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      transition: color 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .contentBox .buy {
+      position: relative;
+      top: 100px;
+      opacity: 0;
+      padding: 10px 30px;
+      margin-top: 15px;
+      color: #000000;
+      text-decoration: none;
+      background: #ffce00;
+      border-radius: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Улучшена плавность */
+      cursor: pointer;
+    }
+
+    /* Добавляем стили для активной карточки */
+    .card.active .contentBox .buy {
+      top: 0;
+      opacity: 1;
+    }
+
+    /* Индикаторы */
+    .indicators {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+      transition: opacity 0.5s ease-in-out; /* Добавлена плавность */
+    }
+
+    .indicator {
+      width: 10px;
+      height: 10px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      transition: background 0.3s ease-in-out; /* Улучшена плавность */
+      cursor: pointer;
+    }
+
+    .indicator.active {
+      background: #ffce00;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 360px) {
+      .card {
+        width: 100%;
+        height: auto;
+      }
+
+      .contentBox .buy {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container">
+    <div class="carousel" id="carousel">
+      <!-- Первая карточка -->
+      <div class="card active">
+        <div class="imgBox">
+          <img src="https://i.postimg.cc/k43tJSMt/Screenshot-20241020-183907-SOVA-V-RE.jpg" alt="Mouse Corsair M65" class="mouse">
+        </div>
+        <div class="contentBox">
+          <h3>Mouse Corsair M65</h3>
+          <h2 class="price">61.<small>98</small> €</h2>
+          <a href="#" class="buy" data-product='{"name": "Mouse Corsair M65", "price": "61.98 €"}'>Купить Сейчас</a>
+        </div>
+      </div>
+      
+      <!-- Вторая карточка -->
+      <div class="card">
+        <div class="imgBox">
+          <img src="https://www.rasports.ru/wp-content/uploads/2020/04/49-moto.png" alt="Jersey Sport" class="mouse">
+        </div>
+        <div class="contentBox">
+          <h3>Jersey Sport</h3>
+          <h2 class="price">45.<small>50</small> €</h2>
+          <a href="#" class="buy" data-product='{"name": "Jersey Sport", "price": "45.50 €"}'>Купить Сейчас</a>
+        </div>
+      </div>
+      
+      <!-- Третья карточка -->
+      <div class="card">
+        <div class="imgBox">
+          <img src="https://via.placeholder.com/300x300.png?text=Product+3" alt="Product 3" class="mouse">
+        </div>
+        <div class="contentBox">
+          <h3>Product 3</h3>
+          <h2 class="price">30.<small>00</small> €</h2>
+          <a href="#" class="buy" data-product='{"name": "Product 3", "price": "30.00 €"}'>Купить Сейчас</a>
+        </div>
+      </div>
+      
+      <!-- Добавьте больше карточек по необходимости -->
+    </div>
+    
+    <!-- Индикаторы -->
+    <div class="indicators" id="indicators">
+      <!-- Индикаторы будут добавлены через JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    // Встроенный JavaScript
+
+    // Функция для взаимодействия с Telegram Web App
+    function sendDataToBot(product) {
+      // Проверяем, запущено ли веб-приложение внутри Telegram
+      if (window.Telegram && window.Telegram.WebApp) {
+        // Отправляем данные боту
+        Telegram.WebApp.sendData(JSON.stringify(product));
+      } else {
+        alert("Это веб-приложение должно быть запущено внутри Telegram.");
+      }
+    }
+
+    // Обработчик событий для кнопок "Купить Сейчас"
+    document.querySelectorAll('.buy').forEach(button => {
+      button.addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+        const productData = this.getAttribute('data-product');
+        try {
+          const product = JSON.parse(productData);
+          sendDataToBot(product);
+        } catch (error) {
+          console.error("Ошибка при разборе данных продукта:", error);
+        }
+      });
+    });
+
+    // Настройка карусели
+    const carousel = document.getElementById('carousel');
+    const indicatorsContainer = document.getElementById('indicators');
+    const cards = document.querySelectorAll('.card');
+    const totalCards = cards.length;
+    let currentIndex = 0;
+
+    // Создание индикаторов
+    for (let i = 0; i < totalCards; i++) {
+      const indicator = document.createElement('div');
+      indicator.classList.add('indicator');
+      if (i === 0) indicator.classList.add('active');
+      indicator.dataset.index = i;
+      indicatorsContainer.appendChild(indicator);
+    }
+
+    const indicators = document.querySelectorAll('.indicator');
+
+    // Функция для обновления индикаторов
+    function updateIndicators(index) {
+      indicators.forEach(ind => ind.classList.remove('active'));
+      if (indicators[index]) indicators[index].classList.add('active');
+    }
+
+    // Функция для обновления активной карточки
+    function updateActiveCard(index) {
+      cards.forEach((card, i) => {
+        if (i === index) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+
+    // Обработчик клика на индикатор
+    indicators.forEach(indicator => {
+      indicator.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        scrollToCard(index);
+      });
+    });
+
+    // Функция для прокрутки до карточки
+    function scrollToCard(index) {
+      const cardWidth = carousel.clientWidth + 20; // Ширина карточки + отступы
+      carousel.style.transform = `translateX(-${index * cardWidth}px)`;
+      currentIndex = index;
+      updateIndicators(currentIndex);
+      updateActiveCard(currentIndex);
+    }
+
+    // Автоматическое обновление индикаторов и активной карточки при завершении перехода
+    carousel.addEventListener('transitionend', () => {
+      updateIndicators(currentIndex);
+      updateActiveCard(currentIndex);
+    });
+
+    // Плавная прокрутка при свайпе (для мобильных устройств)
+    let startX;
+    let isDragging = false;
+
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    });
+
+    carousel.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const currentX = e.touches[0].clientX;
+      const diff = startX - currentX;
+      if (diff > 50 && currentIndex < totalCards - 1) {
+        scrollToCard(currentIndex + 1);
+        isDragging = false;
+      } else if (diff < -50 && currentIndex > 0) {
+        scrollToCard(currentIndex - 1);
+        isDragging = false;
+      }
+    });
+
+    carousel.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Обработка прокрутки с помощью колесика мыши (для настольных устройств)
+    carousel.addEventListener('wheel', (e) => {
+      if (e.deltaY > 0 && currentIndex < totalCards - 1) {
+        scrollToCard(currentIndex + 1);
+      } else if (e.deltaY < 0 && currentIndex > 0) {
+        scrollToCard(currentIndex - 1);
+      }
+    });
+
+    // Инициализация: установка первой карточки как активной
+    document.addEventListener('DOMContentLoaded', () => {
+      updateActiveCard(currentIndex);
+    });
+  </script>
+</body>
+</html>
