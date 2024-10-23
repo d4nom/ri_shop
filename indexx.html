@@ -1,0 +1,27 @@
+<!-- webapp.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор сердца</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Выберите количество сердечек</h1>
+    <button onclick="sendData(1)">1 ❤️</button>
+    <button onclick="sendData(2)">2 ❤️❤️</button>
+
+    <script>
+        function sendData(value) {
+            // Получаем объект Telegram Web App
+            const tg = window.Telegram.WebApp;
+
+            // Закрываем Web App
+            tg.close();
+
+            // Отправляем данные обратно боту
+            tg.sendData(value.toString());
+        }
+    </script>
+</body>
+</html>
